@@ -15,81 +15,76 @@
 // raza, seguido de una imagen que se obtiene con el endpoint
 // /breed/{BREED_NAME}/images/random.
 
-
 const listSection = document.getElementById('listSection'),
-      modal = document.getElementById('modal'),
-      img = document.getElementById('modalImg'),
-      title = document.getElementById('modalTitle'),
-      modalWrapper = document.getElementById('modalWrapper'),
-      modalBtn = document.getElementById('modalBtn');
-      
+    modal = document.getElementById('modal'),
+    img = document.getElementById('modalImg'),
+    title = document.getElementById('modalTitle'),
+    modalWrapper = document.getElementById('modalWrapper'),
+    modalBtn = document.getElementById('modalBtn');
 
-modalBtn.addEventListener('click', () => modalWrapper.style.display = 'none' )
+modalBtn.addEventListener('click', () => (modalWrapper.style.display = 'none'));
 
 async function getImg(e) {
-  const id = e.target.id
-  fetch(`https://dog.ceo/api/breed/${id}/images/random`)
-  .then(resp => {
-    title.textContent = `Raza ${id}`  
-    img.alt = `Imagen de la raza ${id}`
-    return resp.json()
- })
- .then(resp => {
-  img.src = resp.message
- })
- .finally(() => {
-  modalWrapper.style.display = 'flex'
- })
+    const id = e.target.id;
+    fetch(`https://dog.ceo/api/breed/${id}/images/random`)
+        .then((resp) => {
+            title.textContent = `Raza ${id}`;
+            img.alt = `Imagen de la raza ${id}`;
+            return resp.json();
+        })
+        .then((resp) => {
+            img.src = resp.message;
+        })
+        .finally(() => {
+            modalWrapper.style.display = 'flex';
+        });
 }
 
 const groupBreeds = (arr) => {
-  const groups = arr.reduce((acc,cur) => {
-    const last = acc[acc.length -1]
-    if (last && last[0][0] === cur[0]) {
-      last.push(cur);
+    const groups = arr.reduce((acc, cur) => {
+        const last = acc[acc.length - 1];
+        if (last && last[0][0] === cur[0]) {
+            last.push(cur);
+        } else {
+            acc.push([cur]);
+        }
+        return acc;
+    }, []);
 
-    } else {
-      acc.push([cur]);
-    }
-    return acc;
-  }, [])
-
-return groups
-}
+    return groups;
+};
 
 const createCategories = (allBreeds) => {
-  const groupArr = groupBreeds(allBreeds)
-  for(let arr of groupArr) {
-    const char = arr[0][0].toUpperCase()
-    const article = document.createElement('article')
-    const h2 = document.createElement('h2')
-    const ul = document.createElement('ul')
+    const groupArr = groupBreeds(allBreeds);
+    for (let arr of groupArr) {
+        const char = arr[0][0].toUpperCase();
+        const article = document.createElement('article');
+        const h2 = document.createElement('h2');
+        const ul = document.createElement('ul');
 
-    article.id = `breed${char}`
-    h2.textContent = char
-    
-    article.append(h2, ul)
+        article.id = `breed${char}`;
+        h2.textContent = char;
 
-    arr.forEach(el => {
-      const li = document.createElement('li')
-      li.id = el
-      li.textContent = el
-      li.addEventListener('click', getImg)
-      ul.appendChild(li)
-    })
+        article.append(h2, ul);
 
-    listSection.appendChild(article)
-  }
-}
+        arr.forEach((el) => {
+            const li = document.createElement('li');
+            li.id = el;
+            li.textContent = el;
+            li.addEventListener('click', getImg);
+            ul.appendChild(li);
+        });
 
-  window.addEventListener('load', () => {
+        listSection.appendChild(article);
+    }
+};
 
-  fetch('https://dog.ceo/api/breeds/list')
-
-  .then(resp => resp.json())
-  .then(info => {
-    const breeds = [...info.message]
-    createCategories(breeds)
-  })
-  .catch(err => console.log(err))
-  })
+window.addEventListener('load', () => {
+    fetch('https://dog.ceo/api/breeds/list')
+        .then((resp) => resp.json())
+        .then((info) => {
+            const breeds = [...info.message];
+            createCategories(breeds);
+        })
+        .catch((err) => console.log(err));
+});
