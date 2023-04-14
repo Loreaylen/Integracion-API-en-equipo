@@ -1,28 +1,93 @@
-// Ejercicio de integración con API
+const listaPerros = document.getElementById('lista-perros'); //obtengo mi elemento de HTML y lo guardo en la variable
+window.addEventListener('load', () => {
+    fetch('https://dog.ceo/api/breeds/list')
+        .then((resp) => resp.json())
+        .then((info) => {
+            const breeds = [...info.message];
+            createCategories(breeds);
+        })
+        .catch((err) => console.log(err));
+});
 
-// El ejercicio consiste en mostrar la respuesta de los endpoints en una interfaz gráfica.
+const alphabet = [
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z'
+];
 
-// Consigna práctica
-// Se tiene un web service que provee información sobre razas de perros. El mismo
-// consta de dos endpoints, uno que responde un JSON con las razas, y otro que recibe la raza como parámetro y devuelve un JSON que contiene una imagen de la raza.
-// Los endpoints son los siguientes:
-// ● https://dog.ceo/api/breeds/list
-// ● https://dog.ceo/api/breed/{BREED_NAME}/images/random
-// Desarrollar una web en la cual se pueda ver en la vista principal un listado categorizado
-// alfabéticamente por la primera letra de las razas recibidas con el endpoint /breed/list.
-// Al seleccionar un ítem de la lista, se debe abrir otra vista donde se muestre el nombre
-// de la
-// raza, seguido de una imagen que se obtiene con el endpoint
-// /breed/{BREED_NAME}/images/random.
+const createCategories = (allBreeds) => {
+    const groupArr = groupBreeds(allBreeds);
+    groupArr.map((el, i) => {
+        const initialLetter = alphabet[i].toUpperCase();
+        const initial = document.createElement('h2');
+        initial.innerText = initialLetter;
+        listaPerros.appendChild(initial);
+        el.forEach((raza) => {
+            const item = document.createElement('li');
+            const link = document.createElement('a');
+            link.innerText = raza.charAt(0).toUpperCase() + raza.slice(1);
+            link.href = '#';
+            link.addEventListener('click', () => {
+                mostrarFotoPerro(raza);
+            });
+            item.appendChild(link);
+            listaPerros.appendChild(item);
+        });
+    });
+};
+const mostrarFotoPerro = async (raza) => {
+    try {
+        const response = await fetch(
+            `https://dog.ceo/api/breed/${raza}/images/random` //hago la misma solicitud qye hice anteriormente para obtener las img
+        );
+        const data = await response.json();
 
-const listSection = document.getElementById('listSection'),
-    modal = document.getElementById('modal'),
-    img = document.getElementById('modalImg'),
-    title = document.getElementById('modalTitle'),
-    modalWrapper = document.getElementById('modalWrapper'),
-    modalBtn = document.getElementById('modalBtn');
+        const nuevaVentana = window.open(); // creo una nueva ventana
+        nuevaVentana.document.write(`<div style="text-align: center;">
+  <img src="${data.message}" alt="${raza}" style="border: 1px solid black;">
+  <h1 style="font-family: 'Bebas Neue', cursive;  text-transform: uppercase; color: #5a382c;">${raza}</h1>
+</div>`); // creo un div donde almaceno la img y el nombre de la raza
+    } catch (error) {
+        console.log(error);
+    }
+};
 
-modalBtn.addEventListener('click', () => (modalWrapper.style.display = 'none'));
+const groupBreeds = (arr) => {
+    const groups = arr.reduce((acc, cur) => {
+        const last = acc[acc.length - 1];
+        if (last && last[0][0] === cur[0]) {
+            last.push(cur);
+        } else {
+            acc.push([cur]);
+        }
+        return acc;
+    }, []);
+
+    return groups;
+};
 
 async function getImg(e) {
     const id = e.target.id;
@@ -39,52 +104,3 @@ async function getImg(e) {
             modalWrapper.style.display = 'flex';
         });
 }
-
-const groupBreeds = (arr) => {
-    const groups = arr.reduce((acc, cur) => {
-        const last = acc[acc.length - 1];
-        if (last && last[0][0] === cur[0]) {
-            last.push(cur);
-        } else {
-            acc.push([cur]);
-        }
-        return acc;
-    }, []);
-
-    return groups;
-};
-
-const createCategories = (allBreeds) => {
-    const groupArr = groupBreeds(allBreeds);
-    for (let arr of groupArr) {
-        const char = arr[0][0].toUpperCase();
-        const article = document.createElement('article');
-        const h2 = document.createElement('h2');
-        const ul = document.createElement('ul');
-
-        article.id = `breed${char}`;
-        h2.textContent = char;
-
-        article.append(h2, ul);
-
-        arr.forEach((el) => {
-            const li = document.createElement('li');
-            li.id = el;
-            li.textContent = el;
-            li.addEventListener('click', getImg);
-            ul.appendChild(li);
-        });
-
-        listSection.appendChild(article);
-    }
-};
-
-window.addEventListener('load', () => {
-    fetch('https://dog.ceo/api/breeds/list')
-        .then((resp) => resp.json())
-        .then((info) => {
-            const breeds = [...info.message];
-            createCategories(breeds);
-        })
-        .catch((err) => console.log(err));
-});
