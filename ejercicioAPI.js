@@ -22,8 +22,9 @@ const createCategories = (allBreeds) => {
             const link = document.createElement('a');
             link.innerText = raza.charAt(0).toUpperCase() + raza.slice(1);
             link.href = '#';
-            link.addEventListener('click', () => {
-                mostrarFotoPerro(raza);
+             link.addEventListener("click", (event) => {
+             event.preventDefault();
+             mostrarFotoPerro(raza);
             });
             item.appendChild(link);
             listaPerros.appendChild(item);
@@ -38,7 +39,7 @@ const mostrarFotoPerro = async (raza) => {
         const data = await response.json();
 
         const nuevaVentana = window.open(); // creo una nueva ventana
-        nuevaVentana.document.write(`<div style="text-align: center;">
+        nuevaVentana.document.write(`<head><title>Imagén razas de perros</title></head><div style="text-align: center;">
         <a href="http://127.0.0.1:5500/" style=
         "position: absolute; top: 10; left: 10; background: teal; text-decoration: none; border: 2px solid teal; color: white; border-radius: 8px; padding: 4px 8px; cursor: pointer; outline: inherit;"
         ;">test</a>
