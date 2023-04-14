@@ -6,23 +6,19 @@ const mostrarPerros = async () => {
         const data = await response.json();
 
         const razas = Object.keys(data.message); // array con todos las razas de los perros
-    } catch (error) {
-        console.log(error);
-    }
-};
 
-const mostrarFotoPerro = async (raza) => {
-    try {
-        const response = await fetch(
-            `https://dog.ceo/api/breed/${raza}/images/random` //hago la misma solicitud qye hice anteriormente para obtener las img
-        );
-        const data = await response.json();
-
-        const nuevaVentana = window.open(); // creo una nueva ventana
-        nuevaVentana.document.write(`<div style="text-align: center;">
-    <img src="${data.message}" alt="${raza}" style="border: 1px solid black;">
-    <h1 style="font-family: 'Bebas Neue', cursive;  text-transform: uppercase; color: #5a382c;">${raza}</h1>
-  </div>`); // creo un div donde almaceno la img y el nombre de la raza
+        razas.forEach((raza) => {
+            //recorro cada elemento
+            const item = document.createElement('li'); // creo una lista de elementos
+            const link = document.createElement('a'); // tambien un enlace
+            link.innerText = raza; // obtengo el nombre que esta en la variable raza ya que esta contiene el nombre de la raza que se esta recorriendo en el array razas
+            link.href = '#'; // le asigno # para decirle que no se dirija a otra pag
+            link.addEventListener('click', () => {
+                mostrarFotoPerro(raza);
+            }); // cuando haga click en el enlace, osea la raza del perro se va a ver la imagen
+            item.appendChild(link); // el enlace a lo agrego como hijo a li
+            listaPerros.appendChild(item); // y el elemento li al elemento lu que es lista perros
+        });
     } catch (error) {
         console.log(error);
     }

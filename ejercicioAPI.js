@@ -88,19 +88,3 @@ const groupBreeds = (arr) => {
 
     return groups;
 };
-
-async function getImg(e) {
-    const id = e.target.id;
-    fetch(`https://dog.ceo/api/breed/${id}/images/random`)
-        .then((resp) => {
-            title.textContent = `Raza ${id}`;
-            img.alt = `Imagen de la raza ${id}`;
-            return resp.json();
-        })
-        .then((resp) => {
-            img.src = resp.message;
-        })
-        .finally(() => {
-            modalWrapper.style.display = 'flex';
-        });
-}
