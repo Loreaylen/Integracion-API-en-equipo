@@ -9,39 +9,12 @@ window.addEventListener('load', () => {
         .catch((err) => console.log(err));
 });
 
-const alphabet = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z'
-];
 
 const createCategories = (allBreeds) => {
     const groupArr = groupBreeds(allBreeds);
     groupArr.map((el, i) => {
-        const initialLetter = alphabet[i].toUpperCase();
+      console.log()
+        const initialLetter = el[0][0].toUpperCase();
         const initial = document.createElement('h2');
         initial.innerText = initialLetter;
         listaPerros.appendChild(initial);
