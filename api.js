@@ -52,7 +52,7 @@ const showDogg = async (breed) => {
 
   window.open().document.write(`
     <head>
-    <link rel="stylesheet" href="estilos.css" />
+    <link rel="stylesheet" href="styles.css" />
     <title>${breed.charAt(0).toUpperCase() + breed.slice(1)} photo</title>
     </head>
     <div id="styles-outside">
